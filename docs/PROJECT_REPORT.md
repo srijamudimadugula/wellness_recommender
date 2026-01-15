@@ -64,25 +64,25 @@ User Input → Emotion Detection → Video Retrieval → Hybrid Ranking → Pers
 
 ```mermaid
 flowchart TB
-    subgraph UI["🖥️ Streamlit Frontend"]
+    subgraph UI["Streamlit Frontend"]
         A[User Text Input] --> B[Mood Analysis Request]
         G[Display Recommendations] --> H[Collect Feedback]
     end
 
-    subgraph NLP["🧠 NLP Layer"]
+    subgraph NLP["NLP Layer"]
         B --> C[DistilBERT Emotion Classifier]
         C --> D[Emotion Validator]
         D --> E[KeyBERT Keyword Extractor]
     end
 
-    subgraph Retrieval["📺 Content Retrieval"]
+    subgraph Retrieval["Content Retrieval"]
         E --> F[YouTube API Search]
         F --> F1[Video Details Fetch]
         F1 --> F2[Channel Info Fetch]
         F2 --> F3[Quality Filters]
     end
 
-    subgraph ML["⚙️ ML Pipeline"]
+    subgraph ML["ML Pipeline"]
         F3 --> I[Feature Normalizer]
         I --> J[Heuristic Ranker]
         I --> K[LinUCB Recommender]
@@ -91,7 +91,7 @@ flowchart TB
         L --> G
     end
 
-    subgraph Learning["📈 Feedback Loop"]
+    subgraph Learning["Feedback Loop"]
         H --> M[Reward Mapping]
         M --> N[User Context Update]
         M --> O[LinUCB Model Update]
@@ -228,11 +228,11 @@ New users (w→0) get heuristic-based recommendations; experienced users (w→0.
 ### Working Prototype
 
 The system is fully functional with:
-- ✅ Natural language emotion input
-- ✅ Real-time YouTube video fetching
-- ✅ Hybrid ranking with RL personalization
-- ✅ Feedback loop for continuous learning
-- ✅ Calming "Sanctuary" UI with breathing animations
+-  Natural language emotion input
+-  Real-time YouTube video fetching
+-  Hybrid ranking with RL personalization
+-  Feedback loop for continuous learning
+-  Calming "Sanctuary" UI with breathing animations
 
 ### Example Outputs
 
@@ -365,6 +365,4 @@ The system is fully functional with:
 | Claude (Anthropic) | Code assistance, architecture design, documentation |
 | GitHub Copilot | Code completion and suggestions |
 
----
 
-*Report generated: January 2026*
