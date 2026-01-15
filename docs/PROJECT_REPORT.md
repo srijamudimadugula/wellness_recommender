@@ -4,8 +4,8 @@
 
 | Field | Details |
 |-------|---------|
-| **Student Name** | [Your Name] |
-| **Mentor Name** | [Mentor Name] |
+| **Student Name** | M Srija |
+| **Mentor Name** | Kartik Gupta |
 | **Project Title** | Wellness Sanctuary – AI-Powered Personalized Wellness Recommendation System |
 
 ---
