@@ -1,21 +1,16 @@
-"""
-Wellness Sanctuary - Premium Wellness Recommendation System
-A minimal, elegant interface for soul-nourishing content.
-"""
+
 
 import streamlit as st
 import uuid
 import sys
 import os
 
-# Add src to path for imports
+
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from api.recommendation_endpoint import HybridRecommendationSystem
 
-# ═══════════════════════════════════════════════════════════
 # CONFIGURATION & THEME
-# ═══════════════════════════════════════════════════════════
 
 st.set_page_config(
     page_title="Wellness Sanctuary",
@@ -222,9 +217,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════════════════════
 # SESSION STATE & SYSTEM
-# ═══════════════════════════════════════════════════════════
 
 if 'user_id' not in st.session_state:
     st.session_state.user_id = f"seeker_{uuid.uuid4().hex[:6]}"
@@ -241,9 +234,8 @@ def load_sanctuary_controller():
 
 system = load_sanctuary_controller()
 
-# ═══════════════════════════════════════════════════════════
+
 # MAIN UI
-# ═══════════════════════════════════════════════════════════
 
 def main():
     # Dynamic Sanctuary Greeting
