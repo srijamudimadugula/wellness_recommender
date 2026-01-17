@@ -8,7 +8,7 @@ A premium, AI-powered wellness recommendation system that detects user emotions 
 - **Project Notebook:** [View Project Notebook](WELLNESS_SANCTUARY.ipynb)
 - **Project Report:** [view project report](https://docs.google.com/document/d/1gMksoQ-6TzFI-WsdgIcka22TftAxxjJPFpfbV70BOuM/edit?usp=sharing)
 - **Presentation:** [Google Slides](https://docs.google.com/presentation/d/19hpN2jRxNzzMgOEHhd2z5YEA3ujTtgl3j-KfAnDVZlA/edit?usp=sharing)
-- **Video Demo:** [Watch Demonstration]([https://link-to-your-video](https://drive.google.com/file/d/1rKHd9AzFTelnVkPv-ZCWeq3H6qwWS4w9/view?usp=sharing))
+- **Video Demo:** [Watch Demonstration](https://drive.google.com/file/d/1rKHd9AzFTelnVkPv-ZCWeq3H6qwWS4w9/view?usp=sharing)
 - **Live App:** [Streamlit Sanctuary](https://wellnessrecommender.streamlit.app/)
 
 
