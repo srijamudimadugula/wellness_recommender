@@ -5,14 +5,12 @@ A premium, AI-powered wellness recommendation system that detects user emotions 
 ## 🎓 Module E Project Submission
 
 **Artifacts:**
-- **Project Notebook:** [View Project Notebook](WELLNESS_SANCTUARY.ipynb)
-- **Project Report:** [view project report](https://docs.google.com/document/d/1gMksoQ-6TzFI-WsdgIcka22TftAxxjJPFpfbV70BOuM/edit?usp=sharing)
-- **Presentation:** [Google Slides](https://docs.google.com/presentation/d/19hpN2jRxNzzMgOEHhd2z5YEA3ujTtgl3j-KfAnDVZlA/edit?usp=sharing)
-- **Video Demo:** [Watch Demonstration](https://drive.google.com/file/d/1erj2GpXm-dncWlYHfp6AczB1jb6ZUuDe/view?usp=sharing)
+- **Project Notebook:** [View Project Notebook](https://drive.google.com/file/d/1--nElXOSQ_wqoHCtFk8nRnVgEZ99xc1g/view?usp=sharing)
+- **Project Report:** [view project report](https://docs.google.com/document/d/1KIjz7FVHAj3GQD774wutl09kGHNnxxZB/edit?usp=sharing&ouid=111743593762162565602&rtpof=true&sd=true)
+- **Presentation:** [Google Slides](https://docs.google.com/presentation/d/1AYyQ5DkUMPONEM82Cq8kNv57Hjym5T2B/edit?usp=sharing&ouid=111743593762162565602&rtpof=true&sd=true)
+- **Video Demo:** [Watch Demonstration](https://drive.google.com/file/d/1eroNdYqcYo58ZJUvSlgNCo4zXpk1zP4S/view?usp=sharing)
 - **Live App:** [Streamlit Sanctuary](https://wellnessrecommender.streamlit.app/)
 
-
----
 
 ## ✨ Features
 
