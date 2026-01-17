@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from src.ml.heuristic_ranker import HeuristicRanker
-from src.rl.linucb_recommender import LinUCBRecommender
+from src.rl.linucb_recommender import LinUCBRecommender, calculate_production_reward
 from src.api.user_context_manager import UserContextManager
 from src.ml.feature_normalizer import FeatureNormalizer
 from src.ml.emotion_detector import EmotionDetector
@@ -253,17 +253,27 @@ class HybridRecommendationSystem:
         
         return top_recs
 
-    def process_feedback(self, user_id, emotion, category, video_id, feedback, context=None, video_features=None):
+    def process_feedback(self, user_id, emotion, category, video_id, feedback, 
+                         context=None, video_features=None, 
+                         watch_time=None, total_duration=None):
         """
-        Process user feedback.
+        Process user feedback with optional watch-time-based reward shaping.
+        
+        Args:
+            watch_time: Seconds watched (optional, enables nuanced reward)
+            total_duration: Total video duration in seconds
         """
-        # Map feedback
-        if feedback == 'thumbs_up':
-            reward = 1.0
-        elif feedback == 'thumbs_down':
-            reward = -1.0
+        # Calculate Reward: Use production reward shaping if watch_time available
+        if watch_time is not None and total_duration is not None:
+            reward = calculate_production_reward(watch_time, total_duration, feedback)
         else:
-            return {'status': 'ignored'}
+            # Fallback: Simple mapping for explicit signals only
+            if feedback == 'thumbs_up':
+                reward = 1.0
+            elif feedback == 'thumbs_down':
+                reward = -1.0
+            else:
+                return {'status': 'ignored'}
             
         self.context_manager.update_user_context(user_id, reward)
         

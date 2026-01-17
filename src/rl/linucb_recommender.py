@@ -2,11 +2,39 @@ import numpy as np
 import pickle
 import os
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
+from threading import Lock
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+# --- PRODUCTION UTILITY: REWARD SHAPING ---
+def calculate_production_reward(watch_time: float, total_duration: float, feedback_type: str = None) -> float:
+    """
+    Translates user behavior into a human-calibrated scalar reward.
+    
+    Args:
+        watch_time: Seconds watched
+        total_duration: Total video duration in seconds
+        feedback_type: Optional explicit signal ('thumbs_up', 'thumbs_down')
+    
+    Returns:
+        Reward value between -1.5 and 1.0
+    """
+    watch_percent = min(watch_time / max(total_duration, 1), 1.0)
+    
+    # 1. Base: Dwell Time (scales -0.4 to 0.6)
+    reward = (watch_percent * 1.0) - 0.4
+    
+    # 2. Explicit Signals (Human-Like Weights)
+    if feedback_type == "thumbs_up":
+        reward += 0.4  # Max success = 1.0
+    elif feedback_type == "thumbs_down":
+        reward = -1.5  # Risk Aversion: Strong penalty to stop bad recs immediately
+        
+    return max(min(reward, 1.0), -1.5)
 
 @dataclass
 class LinUCBModel:
@@ -14,11 +42,23 @@ class LinUCBModel:
     b: np.ndarray  # Reward vector
     theta: np.ndarray  # Weights
     interaction_count: int = 0
+    lock: Lock = field(default_factory=Lock, repr=False)  # Thread-safe updates
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if 'lock' in state:
+            del state['lock']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.lock = Lock()
 
 class LinUCBRecommender:
-    def __init__(self, context_dim: int = 19, alpha: float = 1.0):
+    def __init__(self, context_dim: int = 19, alpha: float = 1.0, lambda_forget: float = 0.99):
         self.context_dim = context_dim
         self.alpha = alpha
+        self.lambda_forget = lambda_forget  # Temporal discounting factor
         self.models: Dict[str, LinUCBModel] = {}
         self.total_interactions = 0
         
@@ -30,7 +70,8 @@ class LinUCBRecommender:
             A=np.identity(self.context_dim),
             b=np.zeros((self.context_dim, 1)),
             theta=np.zeros((self.context_dim, 1)),
-            interaction_count=0
+            interaction_count=0,
+            lock=Lock()
         )
         
     def get_or_create_model(self, emotion, category) -> LinUCBModel:
@@ -99,36 +140,48 @@ class LinUCBRecommender:
         return selected_vid, ucb_scores
 
     def get_ucb_score(self, emotion, category, context_vector) -> Tuple[float, float]:
-        """Calculate UCB score with numerical stability fixes."""
+        """Calculate UCB score with numerical stability fixes and thread safety."""
         model = self.get_or_create_model(emotion, category)
         
-        # NUMERICAL STABILITY: Use pinv for robust inversion
-        A_inv = np.linalg.pinv(model.A)
-        
-        mean = (model.theta.T @ context_vector).item()
-        
-        # Exploration bonus with variance check
-        var = context_vector.T @ A_inv @ context_vector
-        uncertainty = self.alpha * np.sqrt(np.maximum(0, var.item()))
-        
-        return mean + uncertainty, uncertainty
+        try:
+            with model.lock:  # Thread-safe read
+                # NUMERICAL STABILITY: Use pinv for robust inversion
+                A_inv = np.linalg.pinv(model.A)
+                
+                mean = (model.theta.T @ context_vector).item()
+                
+                # Exploration bonus with variance check
+                var = context_vector.T @ A_inv @ context_vector
+                uncertainty = self.alpha * np.sqrt(np.maximum(0, var.item()))
+                
+            return mean + uncertainty, uncertainty
+        except np.linalg.LinAlgError:
+            logger.error("Matrix inversion failed in get_ucb_score. Returning zero.")
+            return 0.0, self.alpha  # Safe fallback
 
     def update(self, emotion, category, context, reward):
+        """Thread-safe update with temporal discounting (human-like forgetting)."""
         model = self.get_or_create_model(emotion, category)
         
-        # LinUCB Update
-        model.A += context @ context.T
-        model.b += reward * context
-        
-        # NUMERICAL STABILITY: Use solve instead of direct inverse
-        model.theta = np.linalg.solve(model.A, model.b)
-        
-        model.interaction_count += 1
-        self.total_interactions += 1
-        
-        # Decay alpha
-        if self.total_interactions > 100:
-            self.alpha = max(0.1, self.alpha * 0.999)
+        with model.lock:  # Thread-safe write
+            # Apply Temporal Discounting (Human-like 'forgetting')
+            model.A = (self.lambda_forget * model.A) + (context @ context.T)
+            model.b = (self.lambda_forget * model.b) + (reward * context)
+            
+            # NUMERICAL STABILITY: Use solve instead of direct inverse
+            try:
+                model.theta = np.linalg.solve(model.A, model.b)
+            except np.linalg.LinAlgError:
+                logger.error("Matrix solve failed. Resetting A to identity.")
+                model.A = np.identity(self.context_dim)
+                model.theta = np.zeros((self.context_dim, 1))
+            
+            model.interaction_count += 1
+            self.total_interactions += 1
+            
+            # Decay alpha
+            if self.total_interactions > 100:
+                self.alpha = max(0.1, self.alpha * 0.999)
 
     def save(self, path='./models/linucb_models.pkl'):
         os.makedirs(os.path.dirname(path), exist_ok=True)

@@ -25,10 +25,10 @@ graph TD
     
     FinalScore -->|8. Top 4 Videos| UI
     
-    %% Feedback Loop
-    UI -->|9. User Clicks 'Start'| Feedback[Feedback Handler]
-    Feedback -->|10. Reward: +1| LinUCB
-    LinUCB -->|11. Update Weights| LinUCB
+    %% Feedback Loop (Production-Ready)
+    UI -->|9. Watch Time + Feedback| Feedback[Reward Shaper]
+    Feedback -->|10. Nuanced Reward: -1.5 to +1.0| LinUCB
+    LinUCB -->|11. Thread-Safe Update with λ=0.99| LinUCB
     
     %% Styling
     classDef primary fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
@@ -47,5 +47,9 @@ graph TD
 3.  **Retrieval:** System fetches 50 candidates from YouTube.
 4.  **Processing:** Candidates are scored on two axes:
     *   **Quality:** Is it a popular, high-definition video? (Heuristic)
-    *   **Personal Fit:** Does it match what this user *historicaly* likes when they are anxious? (LinUCB)
-5.  **Learning:** When the user clicks, the LinUCB model "learns" that the features of that video (e.g., "Short Duration") were a good match for the context ("Anxiety"), and keeps that in memory for next time.
+    *   **Personal Fit:** Does it match what this user *historically* likes when they are anxious? (LinUCB)
+5.  **Learning (Production-Ready):**
+    *   **Reward Shaping:** Combines watch-time % + explicit feedback (thumbs up/down) into a calibrated reward (-1.5 to +1.0)
+    *   **Temporal Discounting:** Applies `λ=0.99` decay so recent preferences matter more than old ones
+    *   **Thread-Safe Update:** Uses `threading.Lock()` to safely handle concurrent users
+    *   **Error Handling:** Matrix failures gracefully reset without crashing

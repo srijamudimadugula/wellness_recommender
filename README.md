@@ -17,7 +17,10 @@ A premium, AI-powered wellness recommendation system that detects user emotions 
 - **🧠 Emotion Detection**: Advanced BERT-based model (`distilbert-base-uncased-emotion`) to understand user sentiment (stressed, anxious, happy, tired, etc.).
 - **🤖 Hybrid Recommendation Engine**:
   - **Heuristic Ranker**: Quality assurance based on views, engagement, and video metadata.
-  - **LinUCB (Contextual Multi-Armed Bandit)**: Personalization algorithm that learns from user feedback in real-time.
+  - **LinUCB (Contextual Multi-Armed Bandit)**: Production-ready personalization with:
+    - 🔒 **Thread-Safe Updates**: Concurrent user feedback without data corruption
+    - 🧠 **Temporal Discounting** (`λ=0.99`): Human-like "forgetting" of older preferences
+    - 📊 **Behavior-Based Reward Shaping**: Watch-time + explicit feedback → nuanced rewards
 - **📱 Premium User Interface**: A calm, "Sanctuary" themed Streamlit web application.
 - **🔌 REST API**: Full FastAPI backend for integration with other platforms.
 - **🔄 Adaptability**: Works with a Mock YouTube Service (offline/dev) or the real YouTube Data API.
@@ -56,10 +59,22 @@ A premium, AI-powered wellness recommendation system that detects user emotions 
 ### 1. Web Interface (Streamlit)
 The primary user interface.
 
+### 1. Web Interface (Streamlit)
+To run locally:
 ```bash
 streamlit run streamlit_app.py
 ```
-Access at: `http://localhost:8501`
+Access at: `http://localhost:8501` (Note: No Lock Icon/HTTPS locally)
+
+### 2. Deployment (Streamlit Cloud) - **Recommended**
+To get the secure **HTTPS Lock Icon**:
+1. Push this code to GitHub.
+2. Go to [Streamlit Cloud](https://share.streamlit.io).
+3. Deploy the app from your repo.
+4. **Important**: In "Advanced Settings" > "Secrets", add:
+   ```toml
+   YOUTUBE_API_KEY = "your_key_here"
+   ```
 
 ### 2. Backend API (FastAPI)
 For headless operation or integrations.
@@ -124,6 +139,33 @@ wellness_recommender/
 - **Frontend**: Streamlit, Custom CSS
 - **ML/AI**: PyTorch, Transformers (Hugging Face), Scikit-Learn
 - **Algorithm**: Linear Upper Confidence Bound (LinUCB) for Contextual Bandits
+- **Production**: Thread-safe locking, Temporal discounting, Behavior-based reward shaping
+
+---
+
+## 🔧 Production-Ready Architecture
+
+### LinUCB Enhancements
+
+| Feature | Description |
+|---------|-------------|
+| **Thread-Safe Locking** | `threading.Lock()` prevents race conditions during concurrent updates |
+| **Temporal Discounting** | `lambda_forget=0.99` applies exponential decay to older preferences |
+| **Reward Shaping** | `calculate_production_reward()` combines watch-time + explicit feedback |
+| **Error Handling** | Matrix inversion failures gracefully reset without crashing |
+
+### Reward Calculation
+
+```python
+# Example: 75% watch + thumbs_up = 0.75 reward
+reward = calculate_production_reward(watch_time=45, total_duration=60, feedback_type='thumbs_up')
+```
+
+| Scenario | Reward |
+|----------|--------|
+| Watched 100%, thumbs up | **+1.0** |
+| Watched 50%, no feedback | **+0.1** |
+| Thumbs down (any watch) | **-1.5** |
 
 ---
 

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Sanctuary - AI-Powered Yoga & Meditation Recommendations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. CORE DESIGN PRINCIPLES */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f2ef;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px 0;
+            place-items: center;
+        }
+
+        .slide-container {
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Open Sans', sans-serif;
+            height: 720px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px;
+            position: relative;
+            width: 1280px;
+        }
+
+        /* Background Accents: Sage Green Gradient Blobs */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: -150px;
+            right: -150px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #8fbc8f22 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .slide-container>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 2. TYPOGRAPHY */
+        h1,
+        h2,
+        h3 {
+            color: #2d3e2d;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 80px;
+            text-align: center;
+            color: #4a6741;
+        }
+
+        .slide-title {
+            font-size: 44px;
+            margin-bottom: 40px;
+            text-align: left;
+            width: 100%;
+            border-left: 8px solid #8fbc8f;
+            padding-left: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p,
+        li,
+        .subtitle {
+            color: #555;
+            font-size: 22px;
+            line-height: 1.5;
+        }
+
+        .subtitle {
+            font-size: 32px;
+            font-weight: 400;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .content-area {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* 3. LAYOUT COMPONENTS */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .image-wrapper {
+            border-radius: 15px;
+            height: 400px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            background: #f9faf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e0e6e0;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tile-container {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .tile {
+            background-color: #f8faf8;
+            border: 1px solid #e0e6e0;
+            border-radius: 16px;
+            padding: 40px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .tile i {
+            font-size: 50px;
+            color: #4a6741;
+            margin-bottom: 25px;
+        }
+
+        .tile h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 45px;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .bullet-list li::before {
+            content: '\f00d';
+            /* X mark for problem slide */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #d63031;
+        }
+
+        .bullet-list.solution li::before {
+            content: '\f00c';
+            /* Check mark for others */
+            color: #4a6741;
+        }
+
+        /* Comparison Graphic */
+        .vs-graphic {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .vs-item {
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .vs-item.bad {
+            border-left: 5px solid #d63031;
+        }
+
+        .vs-item.good {
+            border-left: 5px solid #4a6741;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Slide 1: Title Slide -->
+    <div class="slide-container"
+        style="background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=1280'); background-size: cover;">
+        <h1>Wellness Sanctuary</h1>
+        <p class="subtitle">AI-Driven Curated Yoga & Meditation Recommendations</p>
+        <div style="margin-top: 60px; padding: 20px; border-top: 2px solid #4a6741;">
+            <p style="font-weight: 700; color: #4a6741;">Student: M Srija | Mentor: Kartik Gupta</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Problem Statement -->
+    <div class="slide-container" id="slide2">
+        <h2 class="slide-title">The Problem: Why Current Search Fails Wellness</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <ul class="bullet-list">
+                        <li><strong>Decision Fatigue (Cognitive Load):</strong> In moments of high stress, users have
+                            minimal mental energy. Searching through thousands of irrelevant results actually
+                            <em>increases</em> distress.</li>
+                        <li><strong>The Semantic Gap:</strong> Searching for emotions like *"I'm angry"* returns literal
+                            matches (news/rants) instead of the **relaxing relief** (Yoga/Meditation) the user actually
+                            needs.</li>
+                        <li><strong>Keyword vs. Emotional Need:</strong> Traditional AI focuses on <em>what you say</em>
+                            but ignores <em>how you feel</em>, creating a massive barrier to immediate emotional
+                            recovery.</li>
+                    </ul>
+                </div>
+                <div class="vs-graphic">
+                    <div class="vs-item bad">
+                        <i class="fa-solid fa-magnifying-glass" style="color:#d63031"></i>
+                        <div>
+                            <small style="color:#777">Keyword Match: "I am stressed"</small><br>
+                            <strong>Result:</strong> High-arousal/Stressful content.
+                        </div>
+                    </div>
+                    <div class="vs-item good">
+                        <i class="fa-solid fa-spa" style="color:#4a6741"></i>
+                        <div>
+                            <small style="color:#777">Wellness Sanctuary:</small><br>
+                            <strong>Result:</strong> Emotion-target Yoga & Meditation.
+                        </div>
+                    </div>
+                    <div class="image-wrapper" style="height: 200px; margin-top: 10px;">
+                        <img src="https://images.unsplash.com/photo-1516533075015-a3838414c3ca?auto=format&fit=crop&q=80&w=600"
+                            alt="Person frustrated with computer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Our Solution -->
+    <div class="slide-container" id="slide3">
+        <h2 class="slide-title">Solution: The Yoga-First Approach</h2>
+        <div class="content-area">
+            <div class="tile-container">
+                <div class="tile">
+                    <i class="fa-solid fa-person-yoga"></i>
+                    <h3>Curated Yoga Flows</h3>
+                    <p>Specifically filtered recommendations focusing on Hatha, Vinyasa, and restorative yoga.</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-om"></i>
+                    <h3>Mindful Meditation</h3>
+                    <p>Mapping high-intensity emotions (Anger/Fear) to grounding meditation practices.</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <h3>Adaptive Matching</h3>
+                    <p>Learning which specific styles of yoga help <em>you</em> most during different stress triggers.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: System Architecture -->
+    <div class="slide-container" id="slide4">
+        <h2 class="slide-title">Architecture: Hybrid Bayesian AI</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <ul class="bullet-list solution">
+                        <li><strong>Intake:</strong> NLP-driven emotion detection.</li>
+                        <li><strong>Filtering:</strong> Domain-restricted Yoga/Meditation queries.</li>
+                        <li><strong>Retrieval:</strong> Real-time YouTube API (restricted to wellness).</li>
+                        <li><strong>Personalization:</strong> LinUCB for ranking preferred yoga styles.</li>
+                    </ul>
+                </div>
+                <div class="image-wrapper">
+                    <div style="text-align: center; width: 100%; padding: 40px;">
+                        <i class="fa-solid fa-gears" style="font-size: 80px; color: #4a6741; margin-bottom: 20px;"></i>
+                        <p><strong>The Bridge:</strong><br>Emotion Text &rarr; Wellness Domain Filter &rarr; Curated
+                            Video Ranking</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: NLP Module (Perception) -->
+    <div class="slide-container" id="slide5">
+        <h2 class="slide-title">NLP: Extracting the Need</h2>
+        <div class="content-area">
+            <div class="tile-container">
+                <div class="tile" style="text-align: left;">
+                    <h3 style="color: #4a6741;"><i class="fa-solid fa-brain" style="font-size: 30px;"></i> Emotion
+                        Classifier</h3>
+                    <p>DistilBERT identifies the core emotional state (e.g., "Anxiety") to determine the yoga intensity
+                        required.</p>
+                </div>
+                <div class="tile" style="text-align: left;">
+                    <h3 style="color: #4a6741;"><i class="fa-solid fa-key" style="font-size: 30px;"></i> Stressor
+                        Extraction</h3>
+                    <p>KeyBERT identifies context (e.g., "work stress") to choose between desk yoga or full-body flows.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Bayesian Personalization (Decision) -->
+    <div class="slide-container" id="slide6">
+        <h2 class="slide-title">LinUCB: Learning Your Zen</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div style="background: #f0f4f0; padding: 40px; border-radius: 20px; text-align: center;">
+                    <p style="font-family: serif; font-style: italic; font-size: 28px;">p<sub>ta</sub> = x<sup>T</sup>θ
+                        + α√(x<sup>T</sup>A<sup>-1</sup>x)</p>
+                    <p style="font-size: 16px; margin-top: 20px;">Balancing Discovery of new Yoga styles vs. Your
+                        Favorites</p>
+                </div>
+                <div>
+                    <ul class="bullet-list solution">
+                        <li><strong>19-Dim Context:</strong> Vector mapping current mood to content features (Duration,
+                            Intensity, Style).</li>
+                        <li><strong>Reinforcement:</strong> "Liking" a meditation session increases the weight of
+                            similar content.</li>
+                        <li><strong>Adaptive:</strong> Shifts recommendations as your mindfulness journey progresses.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Demo Snapshots -->
+    <div class="slide-container" id="slide7" style="display: grid; grid-template-columns: 1fr 1fr; padding: 0;">
+        <div style="padding: 80px 60px;">
+            <h2 class="slide-title">User Experience</h2>
+            <p>A minimalist, spa-inspired interface designed to suggest Yoga & Meditation instantly.</p>
+            <ul class="bullet-list solution" style="margin-top: 30px;">
+                <li>Direct Yoga Video Embeds.</li>
+                <li>Emotion-based categories.</li>
+                <li>Instant feedback loop for personalization.</li>
+            </ul>
+        </div>
+        <div
+            style="height: 720px; background: url('https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&q=80&w=600'); background-size: cover;">
+        </div>
+    </div>
+
+    <!-- Slide 8: Results & Performance -->
+    <div class="slide-container" id="slide8">
+        <h2 class="slide-title">System Performance Results</h2>
+        <div class="content-area" style="text-align: center;">
+            <div style="display: flex; gap: 40px; justify-content: center; margin-bottom: 40px;">
+                <div class="tile">
+                    <h4 style="font-size: 60px; color: #4a6741;">76.9%</h4>
+                    <p>NLP Accuracy</p>
+                </div>
+                <div class="tile">
+                    <h4 style="font-size: 60px; color: #4a6741;">0.78s</h4>
+                    <p>Response Latency</p>
+                </div>
+            </div>
+            <p>Targeted yoga recommendations achieve high relevance scores within <strong>15 user interactions</strong>.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 9: Key Learnings -->
+    <div class="slide-container" id="slide9">
+        <h2 class="slide-title">Technical Reflections</h2>
+        <div class="content-area">
+            <div class="tile-container">
+                <div class="tile">
+                    <i class="fa-solid fa-filter"></i>
+                    <h3>Domain Restriction</h3>
+                    <p>Focusing purely on Yoga/Meditation significantly improved the precision of the Bandit rewards.
+                    </p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-calculator"></i>
+                    <h3>Numerical Stability</h3>
+                    <p>Ensuring matrix math stability for real-time personalization updates.</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h3>Feature Engineering</h3>
+                    <p>Normalization of context was critical for distinguishing between different yoga styles.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Future Scope -->
+    <div class="slide-container" id="slide10"
+        style="background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('https://images.unsplash.com/photo-1470252649358-96957c053e9a?auto=format&fit=crop&q=80&w=1280'); background-size: cover;">
+        <h2 class="slide-title" style="border:none; text-align: center;">The Road Ahead</h2>
+        <div style="display: flex; gap: 40px; margin-top: 40px;">
+            <div class="tile">
+                <h3>Biometrics</h3>
+                <p>Heart-rate based Yoga Intensity</p>
+            </div>
+            <div class="tile">
+                <h3>Health Integrations</h3>
+                <p>Apple Health / Google Fit sync</p>
+            </div>
+            <div class="tile)<h3>Global Zen</h3><p>Multilingual Guided Meditation</p></div>
+    </div>
+    <p style=" margin-top: 60px; font-size: 14px; opacity: 0.6; text-align: center;">Presented by M Srija</p>
+            </div>
+
+</body>
+
+</html>

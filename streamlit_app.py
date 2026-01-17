@@ -7,6 +7,7 @@ import streamlit as st
 import uuid
 import sys
 import os
+import hashlib
 
 # Add src to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
@@ -219,6 +220,35 @@ st.markdown("""
         margin-top: 1rem !important;
         box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
     }
+
+    /* Feedback Buttons */
+    .feedback-container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        padding: 0.5rem 0;
+    }
+    
+    .feedback-btn {
+        background: none !important;
+        border: 1px solid #E1E4E6 !important;
+        border-radius: 50% !important;
+        width: 40px !important;
+        height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-size: 1.2rem !important;
+        padding: 0 !important;
+    }
+
+    .feedback-btn:hover {
+        background-color: #F0F2F0 !important;
+        border-color: #4A675A !important;
+        transform: scale(1.1);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -234,6 +264,56 @@ if 'last_mood' not in st.session_state:
     st.session_state.last_mood = ""
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
+if 'current_emotion' not in st.session_state:
+    st.session_state.current_emotion = "neutral"
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
+def check_password():
+    """Returns `True` if the user had the correct password."""
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        # The password for development is 'wellness2026'
+        # Hashed value of 'wellness2026' using SHA-256
+        EXPECTED_HASH = "a4559662e367676980b4e7bea677a03ab55de20bb9cd072a4b52f80baccb7f6c"
+        
+        entered_password = st.session_state["password"]
+        hashed_entered = hashlib.sha256(entered_password.encode()).hexdigest()
+        
+        if hashed_entered == EXPECTED_HASH:
+            st.session_state["authenticated"] = True
+            del st.session_state["password"]  # don't store password
+        else:
+            st.session_state["authenticated"] = False
+            st.error("😕 Sanctuary access denied. Please check your credentials.")
+
+    if not st.session_state["authenticated"]:
+        # First-time user: Enter password
+        st.markdown('<div style="height: 10vh;"></div>', unsafe_allow_html=True)
+        
+        # Lock Screen Image
+        col_lock_l, col_lock_c, col_lock_r = st.columns([1, 1, 1])
+        with col_lock_c:
+            st.image("assets/lock_screen.png", use_container_width=True)
+            
+        st.markdown('<h1 style="text-align: center; color: #4A675A;">Sanctuary Lock</h1>', unsafe_allow_html=True)
+        
+        col_l, col_c, col_r = st.columns([1, 1, 1])
+        with col_c:
+            st.text_input(
+                "Password", type="password", on_change=password_entered, key="password",
+                placeholder="Enter key to unlock..."
+            )
+            st.markdown('<p style="font-size: 0.7rem; text-align: center; color: #6D7275;">Default Key: <code>wellness2026</code></p>', unsafe_allow_html=True)
+        return False
+    else:
+        # Password correct: show the "Log Out" button in the sidebar
+        with st.sidebar:
+            if st.button("Secure Logout"):
+                st.session_state["authenticated"] = False
+                st.rerun()
+        return True
 
 @st.cache_resource
 def load_sanctuary_controller():
@@ -246,6 +326,10 @@ system = load_sanctuary_controller()
 # ═══════════════════════════════════════════════════════════
 
 def main():
+    # 0. Security Gate
+    if not check_password():
+        return
+
     # Dynamic Sanctuary Greeting
     from datetime import datetime
     hour = datetime.now().hour
@@ -378,6 +462,7 @@ def main():
                         top_n=4
                     )
                     st.session_state.results = response.get('recommendations', [])
+                    st.session_state.current_emotion = response.get('emotion', 'neutral')
                     st.session_state.last_mood = user_mood
                     st.session_state.last_query_id = query_id
                     status.update(label="Sanctuary Ready", state="complete")
@@ -410,11 +495,42 @@ def main():
                         """, unsafe_allow_html=True)
                         
                         st.video(vid['url'])
-                        st.markdown(f"""
-                            <div style="padding: 1rem 0; text-align: right;">
-                                <p style="color: #6D7275; font-size: 0.8rem;">{vid.get('views', 0):,} views • {vid.get('duration_minutes', 0)} mins</p>
-                            </div>
-                        """, unsafe_allow_html=True)
+                        
+                        # Feedback Loop
+                        col_stats, col_fb = st.columns([2, 1])
+                        with col_stats:
+                            st.markdown(f"""
+                                <div style="padding: 1rem 0; text-align: left;">
+                                    <p style="color: #6D7275; font-size: 0.8rem;">{vid.get('views', 0):,} views • {vid.get('duration_minutes', 0)} mins</p>
+                                </div>
+                            """, unsafe_allow_html=True)
+                        
+                        with col_fb:
+                            btn_l, btn_r = st.columns(2)
+                            with btn_l:
+                                if st.button("👍", key=f"up_{vid['video_id']}_{i+j}"):
+                                    system.process_feedback(
+                                        user_id=st.session_state.user_id,
+                                        emotion=st.session_state.current_emotion,
+                                        category='yoga',
+                                        video_id=vid['video_id'],
+                                        feedback='thumbs_up',
+                                        context=vid.get('_context'),
+                                        video_features=vid.get('features')
+                                    )
+                                    st.toast("Match perfected! 🌿")
+                            with btn_r:
+                                if st.button("👎", key=f"down_{vid['video_id']}_{i+j}"):
+                                    system.process_feedback(
+                                        user_id=st.session_state.user_id,
+                                        emotion=st.session_state.current_emotion,
+                                        category='yoga',
+                                        video_id=vid['video_id'],
+                                        feedback='thumbs_down',
+                                        context=vid.get('_context'),
+                                        video_features=vid.get('features')
+                                    )
+                                    st.toast("Adjusting your sanctuary... 🕊️")
 
     # Empty State
     elif not user_mood and not st.session_state.results:
