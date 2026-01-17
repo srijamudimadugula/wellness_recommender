@@ -5,7 +5,7 @@ A premium, AI-powered wellness recommendation system that detects user emotions 
 ## 🎓 Module E Project Submission
 
 **Artifacts:**
-- 📘 **Primary Submission (Notebook):** [`submission_notebook.ipynb`](./submission_notebook.ipynb)  *(Main Source of Truth)*
+- 📘 **Primary Submission (Notebook):**   *(Main Source of Truth)*
 - 📄 **Project Report:** [`docs/PROJECT_REPORT.md`](./docs/PROJECT_REPORT.md)
 - 📽️ **Demo Video:** [Link to be added]
 - 📑 **Slides:** [Link to be added]
