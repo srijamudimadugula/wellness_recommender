@@ -2,7 +2,7 @@
 
 A premium, AI-powered wellness recommendation system that detects user emotions and curates personalized yoga and mindfulness content using a Hybrid Recommender System (Heuristic Ranking + LinUCB Reinforcement Learning).
 
-## 🎓 Module E Project Submission
+
 
 **Artifacts:**
 - **Project Notebook:** [View Project Notebook](https://drive.google.com/file/d/1--nElXOSQ_wqoHCtFk8nRnVgEZ99xc1g/view?usp=sharing)
@@ -168,7 +168,7 @@ reward = calculate_production_reward(watch_time=45, total_duration=60, feedback_
 | Thumbs down (any watch) | **-1.5** |
 
 ---
-
+**still in progress this project is on update**
 ## 🛡️ License
 
 Private/Proprietary - Do not distribute without permission.
