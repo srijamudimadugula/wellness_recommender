@@ -168,7 +168,7 @@ reward = calculate_production_reward(watch_time=45, total_duration=60, feedback_
 | Thumbs down (any watch) | **-1.5** |
 
 ---
-**still in progress this project is on update**
+**This project is in progress updates are on the way!!**
 ## 🛡️ License
 
 Private/Proprietary - Do not distribute without permission.
