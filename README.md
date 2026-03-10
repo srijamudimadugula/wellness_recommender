@@ -2,15 +2,15 @@
 
 A premium, AI-powered wellness recommendation system that detects user emotions and curates personalized yoga and mindfulness content using a Hybrid Recommender System (Heuristic Ranking + LinUCB Reinforcement Learning).
 
-## 🎓 Module E Project Submission
+
 
 **Artifacts:**
-- 📘 **Primary Submission (Notebook):** WELLNESS_SANCTUARY.ipynb*
-- 📄 **Project Report:** [`docs/PROJECT_REPORT.md`](./docs/PROJECT_REPORT.md)
-- 📽️ **Demo Video:** [Link to be added]
-- 📑 **Slides:** [Link to be added]
+- **Project Notebook:** [View Project Notebook](https://drive.google.com/file/d/1--nElXOSQ_wqoHCtFk8nRnVgEZ99xc1g/view?usp=sharing)
+- **Project Report:** [view project report](https://docs.google.com/document/d/1KIjz7FVHAj3GQD774wutl09kGHNnxxZB/edit?usp=sharing&ouid=111743593762162565602&rtpof=true&sd=true)
+- **Presentation:** [Google Slides](https://docs.google.com/presentation/d/1AYyQ5DkUMPONEM82Cq8kNv57Hjym5T2B/edit?usp=sharing&ouid=111743593762162565602&rtpof=true&sd=true)
+- **Video Demo:** [Watch Demonstration](https://drive.google.com/file/d/1eroNdYqcYo58ZJUvSlgNCo4zXpk1zP4S/view?usp=sharing)
+- **Live App:** [Streamlit Sanctuary](https://wellnessrecommender.streamlit.app/)
 
----
 
 ## ✨ Features
 
@@ -168,7 +168,7 @@ reward = calculate_production_reward(watch_time=45, total_duration=60, feedback_
 | Thumbs down (any watch) | **-1.5** |
 
 ---
-
+**This project is in progress updates are on the way!!**
 ## 🛡️ License
 
 Private/Proprietary - Do not distribute without permission.
