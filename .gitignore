@@ -1,5 +1,43 @@
+
+# Virtual Environment
 .venv/
+
+# Python cache
 __pycache__/
+*.pyc
+*.pyo
+
+# Testing
 .pytest_cache/
+
+# Logs
 logs/
+
+# Streamlit secrets
 .streamlit/secrets.toml
+
+# Environment variables
+.env
+*.env
+
+# Sensitive scripts
+get_hash.py
+update_hash.py
+
+# ML model binaries (regenerate on first run)
+models/
+*.pkl
+
+# Large media files
+*.mp4
+*.avi
+
+# Word docs (link to Google Doc instead)
+*.docx
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
