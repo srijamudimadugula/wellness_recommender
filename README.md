@@ -9,7 +9,7 @@ A premium, AI-powered wellness recommendation system that detects user emotions 
 - **Project Report:** [view project report](https://docs.google.com/document/d/1KIjz7FVHAj3GQD774wutl09kGHNnxxZB/edit?usp=sharing&ouid=111743593762162565602&rtpof=true&sd=true)
 - **Presentation:** [Google Slides](https://docs.google.com/presentation/d/1AYyQ5DkUMPONEM82Cq8kNv57Hjym5T2B/edit?usp=sharing&ouid=111743593762162565602&rtpof=true&sd=true)
 - **Video Demo:** [Watch Demonstration](https://drive.google.com/file/d/1eroNdYqcYo58ZJUvSlgNCo4zXpk1zP4S/view?usp=sharing)
-- **Live App:** [Streamlit Sanctuary](https://wellnessrecommender.streamlit.app/)
+
 
 
 ## ✨ Features
